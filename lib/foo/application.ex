@@ -18,12 +18,20 @@ defmodule Foo.Application do
       FooWeb.Endpoint
       # Start a worker by calling: Foo.Worker.start_link(arg)
       # {Foo.Worker, arg}
-    ]
+    ] |> maybe_start_generator()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Foo.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp maybe_start_generator(children) do
+    if Foo.Generator.config(:disabled) do
+      children
+    else
+      children ++ [Foo.Generator]
+    end
   end
 
   # Tell Phoenix to update the endpoint configuration
