@@ -6,7 +6,6 @@ defmodule FooWeb.PageView do
       users: render_many(users, __MODULE__, "user.json", as: :user),
       timestamp: timestamp
     }
-
   end
 
   def render("user.json", %{user: user}) do

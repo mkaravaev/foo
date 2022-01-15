@@ -6,7 +6,7 @@ defmodule FooWeb.PageController do
     with {:ok, resp} <- Generator.fetch() do
       render(conn, "index.json", resp)
     else
-      _error  -> {:error, "Can't process request"}
+      _error -> {:error, "Can't process request"}
     end
   end
 end

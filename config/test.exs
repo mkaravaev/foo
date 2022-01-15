@@ -29,5 +29,4 @@ config :logger, level: :warn
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
 
-config :foo, Foo.Generator,
-  disabled: true
+config :foo, Foo.Generator, disabled: true

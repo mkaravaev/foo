@@ -26,8 +26,7 @@ config :foo, FooWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :foo, Foo.Mailer, adapter: Swoosh.Adapters.Local
 
-config :foo, Foo.Generator,
-  interval: :timer.minutes(1)
+config :foo, Foo.Generator, interval: :timer.minutes(1)
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false

@@ -7,18 +7,20 @@ defmodule Foo.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      # Start the Ecto repository
-      Foo.Repo,
-      # Start the Telemetry supervisor
-      FooWeb.Telemetry,
-      # Start the PubSub system
-      {Phoenix.PubSub, name: Foo.PubSub},
-      # Start the Endpoint (http/https)
-      FooWeb.Endpoint
-      # Start a worker by calling: Foo.Worker.start_link(arg)
-      # {Foo.Worker, arg}
-    ] |> maybe_start_generator()
+    children =
+      [
+        # Start the Ecto repository
+        Foo.Repo,
+        # Start the Telemetry supervisor
+        FooWeb.Telemetry,
+        # Start the PubSub system
+        {Phoenix.PubSub, name: Foo.PubSub},
+        # Start the Endpoint (http/https)
+        FooWeb.Endpoint
+        # Start a worker by calling: Foo.Worker.start_link(arg)
+        # {Foo.Worker, arg}
+      ]
+      |> maybe_start_generator()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

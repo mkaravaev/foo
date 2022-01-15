@@ -18,15 +18,16 @@ defmodule Foo.Generator do
     GenServer.call(__MODULE__, :fetch, timeout)
   end
 
-  def handle_call(:fetch,  _from, %{max_number: max_number, timestamp: prev_timestamp} = state) do
+  def handle_call(:fetch, _from, %{max_number: max_number, timestamp: prev_timestamp} = state) do
     users = Users.get_2_above_points(max_number)
 
-    {:reply, {:ok, %{users: users, timestamp: prev_timestamp}}, %{state| timestamp: Time.current()}}
+    {:reply, {:ok, %{users: users, timestamp: prev_timestamp}},
+     %{state | timestamp: Time.current()}}
   end
 
   def handle_info(:generate, state) do
-    Users.update_all_points
-    {:noreply, %{state| max_number: gen_random()}}
+    Users.update_all_points()
+    {:noreply, %{state | max_number: gen_random()}}
   end
 
   defp gen_random do
@@ -36,5 +37,4 @@ defmodule Foo.Generator do
   def config(key) do
     Application.get_env(:foo, Foo.Generator)[key]
   end
-
 end

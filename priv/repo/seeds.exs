@@ -19,9 +19,13 @@ chunks =
   |> Enum.chunk_every(21845)
 
 Foo.Repo.transaction(fn ->
-  Task.async_stream(chunks, fn chunk ->
-    {count, _} = Foo.Repo.insert_all(Foo.User, chunk)
-    count
-  end, ordered: false)
+  Task.async_stream(
+    chunks,
+    fn chunk ->
+      {count, _} = Foo.Repo.insert_all(Foo.User, chunk)
+      count
+    end,
+    ordered: false
+  )
   |> Enum.reduce(0, fn {:ok, n}, acc -> acc + n end)
 end)

@@ -19,7 +19,9 @@ defmodule FooWeb.PageControllerTest do
 
   defp add_users(count, points \\ 0) do
     inserted_at = updated_at = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    chunk = List.duplicate(%{inserted_at: inserted_at, updated_at: updated_at, points: points}, count)
+
+    chunk =
+      List.duplicate(%{inserted_at: inserted_at, updated_at: updated_at, points: points}, count)
 
     Repo.insert_all(Foo.User, chunk)
   end
