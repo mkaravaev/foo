@@ -16,8 +16,8 @@ defmodule Foo.Generator do
     {:ok, %{max_number: gen_random(), timestamp: nil}}
   end
 
-  def fetch do
-    GenServer.call(__MODULE__, :fetch)
+  def fetch(timeout \\ 5000) do
+    GenServer.call(__MODULE__, :fetch, timeout)
   end
 
   def generate do
