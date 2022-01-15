@@ -10,13 +10,13 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-inserted_at = updated_at = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second) 
+inserted_at = updated_at = Foo.Time.current()
 
-
+# NOTE we use 21845 chunk size because insert_all allowed to update only 65535 params at once
 chunks =
-  List.duplicate(%{inserted_at: inserted_at, updated_at: updated_at, points: 0}, 1_000_000)
+  %{inserted_at: inserted_at, updated_at: updated_at, points: 0}
+  |> List.duplicate(1_000_000)
   |> Enum.chunk_every(21845)
-
 
 Foo.Repo.transaction(fn ->
   Task.async_stream(chunks, fn chunk ->

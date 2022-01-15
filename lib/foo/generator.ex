@@ -1,17 +1,15 @@
 defmodule Foo.Generator do
-  alias Foo.Repo
-  alias Foo.User
-
-  import Ecto.Query
-
   use GenServer
+
+  alias Foo.Users
+  alias Foo.Time
 
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def init(_opts) do
-    Process.send_after(self(), :generate, config(:recurrence_timeout))
+    Process.send_after(self(), :generate, config(:interval))
 
     {:ok, %{max_number: gen_random(), timestamp: nil}}
   end
@@ -20,30 +18,19 @@ defmodule Foo.Generator do
     GenServer.call(__MODULE__, :fetch, timeout)
   end
 
-  def generate do
-    Ecto.Adapters.SQL.query!(Foo.Repo, "UPDATE users SET points = FLOOR(RANDOM() * 100), updated_at = '#{current_time}'")
-  end
-
   def handle_call(:fetch,  _from, %{max_number: max_number, timestamp: prev_timestamp} = state) do
-    query = from u in User,
-      where: u.points > ^max_number,
-      limit: 2
+    users = Users.get_2_above_points(max_number)
 
-    users = Repo.all(query)
-
-    {:reply, {:ok, %{users: users, timestamp: prev_timestamp}}, %{state| timestamp: current_time()}}
+    {:reply, {:ok, %{users: users, timestamp: prev_timestamp}}, %{state| timestamp: Time.current()}}
   end
 
   def handle_info(:generate, state) do
+    Users.update_all_points
     {:noreply, %{state| max_number: gen_random()}}
   end
 
   defp gen_random do
     :rand.uniform(100)
-  end
-
-  defp current_time() do
-    NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second) 
   end
 
   def config(key) do

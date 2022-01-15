@@ -6,33 +6,29 @@ defmodule Foo.GeneratorTest do
 
   @amount_of_users 10
 
-  test "should generate max_number and set timestamp to nil on init" do
+  setup do
+    add_users(@amount_of_users)
     start_supervised!(Generator)
+    :ok
+  end
 
+  test "should generate max_number and set timestamp to nil on init" do
     assert %{max_number: max_number, timestamp: nil} = :sys.get_state(Generator)
     assert max_number in 0..100
   end
 
-  describe "&generate/0" do
-    setup do
-      add_users(@amount_of_users)
-      start_supervised!(Generator)
-      :ok
-    end
+  test "should generate and update points for all users" do
+    assert List.duplicate(0, @amount_of_users) == get_users_points()
 
-    test "should generate points for all users" do
-      assert List.duplicate(0, @amount_of_users) == get_users_points()
+    send(Generator, :generate)
+    :timer.sleep(300)
 
-      Generator.generate()
-
-      refute List.duplicate(0, @amount_of_users) == get_users_points()
-      refute nil in get_users_points()
-    end
+    refute List.duplicate(0, @amount_of_users) == get_users_points()
+    refute nil in get_users_points()
   end
 
   describe "&fetch/0" do
     setup do
-      start_supervised!(Generator)
       add_users(5, 8)
       add_users(5, 9)
       :ok
@@ -52,9 +48,9 @@ defmodule Foo.GeneratorTest do
     end
   end
 
-  defp add_users(count, points \\ 0) do
+  defp add_users(amount_of_users, points \\ 0) do
     inserted_at = updated_at = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    chunk = List.duplicate(%{inserted_at: inserted_at, updated_at: updated_at, points: points}, count)
+    chunk = List.duplicate(%{inserted_at: inserted_at, updated_at: updated_at, points: points}, amount_of_users)
 
     Repo.insert_all(Foo.User, chunk)
   end

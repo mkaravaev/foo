@@ -27,7 +27,7 @@ config :foo, FooWeb.Endpoint,
 config :foo, Foo.Mailer, adapter: Swoosh.Adapters.Local
 
 config :foo, Foo.Generator,
-  recurrence_timeout: :timer.minutes(1)
+  interval: :timer.minutes(1)
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false
