@@ -15,14 +15,14 @@ defmodule Foo.Generator do
   """
   use GenServer
 
-  alias Foo.Users
+  alias Foo.{User, Users}
   alias Foo.Time
 
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  @spec fetch(timeout :: non_neg_integer()) :: {:ok, [%Foo.User{}]}
+  @spec fetch(timeout :: non_neg_integer()) :: {:ok, [%User{}]}
   def fetch(timeout \\ 5000) do
     GenServer.call(__MODULE__, :fetch, timeout)
   end
