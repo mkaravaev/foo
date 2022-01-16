@@ -9,8 +9,14 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+#
+alias Foo.Repo
+alias Foo.Time
+alias Foo.User
 
-inserted_at = updated_at = Foo.Time.current()
+Repo.delete_all(User)
+
+inserted_at = updated_at = Time.current()
 
 # NOTE we use 21845 chunk size because insert_all allowed to update only 65535 params at once
 chunks =
@@ -18,11 +24,11 @@ chunks =
   |> List.duplicate(1_000_000)
   |> Enum.chunk_every(21845)
 
-Foo.Repo.transaction(fn ->
+Repo.transaction(fn ->
   Task.async_stream(
     chunks,
     fn chunk ->
-      {count, _} = Foo.Repo.insert_all(Foo.User, chunk)
+      {count, _} = Repo.insert_all(User, chunk)
       count
     end,
     ordered: false
