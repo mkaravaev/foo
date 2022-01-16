@@ -1,4 +1,7 @@
 defmodule Foo.Users do
+  @moduledoc """
+  A context module that provides interactions with User schema
+  """
   import Ecto.Query
 
   alias Foo.Repo
