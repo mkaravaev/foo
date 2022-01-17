@@ -2,7 +2,9 @@ defmodule FooWeb.PageControllerTest do
   use FooWeb.ConnCase
 
   alias Foo.Generator
+  alias Foo.Time
   alias Foo.Repo
+  alias Foo.User
 
   setup do
     start_supervised!(Generator)
@@ -17,12 +19,12 @@ defmodule FooWeb.PageControllerTest do
     assert [%{"points" => 10, "id" => _id}, _] = users
   end
 
-  defp add_users(count, points \\ 0) do
-    inserted_at = updated_at = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+  defp add_users(count, points) do
+    inserted_at = updated_at = Time.current
 
     chunk =
       List.duplicate(%{inserted_at: inserted_at, updated_at: updated_at, points: points}, count)
 
-    Repo.insert_all(Foo.User, chunk)
+    Repo.insert_all(User, chunk)
   end
 end
